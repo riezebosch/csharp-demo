@@ -22,9 +22,9 @@ namespace TestProject1
         public void TestCombineWithOtherInputs()
         {
             int[] remainder = { 1, 2, 3, 4 };
-            Sum(remainder.Concat(new[] { 1, 2, 3}).ToArray()) // Not so fancy in C#
+            Sum(remainder.Concat(new[] { 1, 2, 3 }).ToArray()) // Not so fancy in C#
                 .Should()
-                .Be(6);
+                .Be(16);
         }
 
         [Fact]
