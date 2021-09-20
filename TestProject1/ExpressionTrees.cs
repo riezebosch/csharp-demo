@@ -80,7 +80,7 @@ namespace TestProject1
         public void ExpressionAndDelegates()
         {
             Func<int, int> f = i => i * 2;
-            Expression<Func<int, int>> e = i => i * 2;
+            Expression<Func<int, int>> e = i => i * 2 / 2 * (1 + i) * int.Parse("3");
             
             _output.WriteLine("-- func:");
             _output.WriteLine(f.ToString());
@@ -91,7 +91,7 @@ namespace TestProject1
             _output.WriteLine("-- compiled:");
             _output.WriteLine(e.Compile().ToString());
 
-            e.Compile().Invoke(3).Should().Be(6);
+            e.Compile().Invoke(3).Should().Be(36);
         }
 
         [Fact]
@@ -120,7 +120,7 @@ namespace TestProject1
         {
             var client = Interceptor.For<HttpClient>();
             client
-                .Setup(x => x.GetAsync(It.IsAny<string>()))
+                .Setup(x => x.GetAsync(Arg.Ignore<string>()))
                 .Returns(new HttpResponseMessage());
             
             var sut = new Target(client);
