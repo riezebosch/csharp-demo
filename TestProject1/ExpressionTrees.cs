@@ -139,6 +139,15 @@ namespace TestProject1
             public Task Update() => 
                 _client.Execute(x => x.GetAsync("https://asdfasdfasdf.adgasdf"));
         }
+
+        [Fact]
+        public void SelectPropertyDemo() =>
+            Select<Person, string>(x => x.FirstName)
+                .Should()
+                .Be("FirstName");
+
+        private static string Select<T, TResult>(Expression<Func<T, TResult>> func) =>
+            ((MemberExpression)func.Body).Member.Name;
     }
 
     public class MyContext : DbContext
