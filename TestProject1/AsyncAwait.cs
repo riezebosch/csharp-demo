@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Xunit;
@@ -29,6 +31,24 @@ namespace TestProject1
             await Task.Run(() => _output.WriteLine(result.ToString()));
             
             throw new FileNotFoundException("see if this fails the test");
+        }
+
+        [Fact]
+        public async Task ListOfTasks()
+        {
+            await foreach (var item in Slow())
+            {
+                _output.WriteLine(item.ToString());
+            }
+        }
+
+        private async IAsyncEnumerable<int> Slow()
+        {
+            await Task.Delay(TimeSpan.FromSeconds(4));
+            yield return 0;
+            
+            await Task.Delay(TimeSpan.FromSeconds(1));
+            yield return 1;
         }
     }
 }
