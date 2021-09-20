@@ -2,9 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Net.Http;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Moq;
+using Unmockable;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -110,6 +113,31 @@ namespace TestProject1
         public interface ISomeInterface
         {
             IEnumerable<int> Fibonacci();
+        }
+
+        [Fact]
+        public async Task HardToMock()
+        {
+            var client = Interceptor.For<HttpClient>();
+            client
+                .Setup(x => x.GetAsync(It.IsAny<string>()))
+                .Returns(new HttpResponseMessage());
+            
+            var sut = new Target(client);
+
+            await sut.Update();
+            client.Verify();
+        }
+
+        public class Target
+        {
+            private readonly IIntercept<HttpClient> _client;
+
+            public Target(IIntercept<HttpClient> client) => 
+                _client = client;
+
+            public Task Update() => 
+                _client.Execute(x => x.GetAsync("https://asdfasdfasdf.adgasdf"));
         }
     }
 
