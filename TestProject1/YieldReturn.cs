@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
@@ -56,8 +57,46 @@ namespace TestProject1
 
         private static IEnumerable<int> Next()
         {
-            yield return 0;
-            yield return 1;
+            return new MyEnumerable();
+        }
+    }
+
+    internal class MyEnumerable : IEnumerable<int>
+    {
+        public IEnumerator<int> GetEnumerator() => 
+            new MyEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator() => 
+            GetEnumerator();
+    }
+
+    internal class MyEnumerator : IEnumerator<int>
+    {
+        public bool MoveNext()
+        {
+            switch (Current)
+            {
+                case -1:
+                    Current = 0;
+                    return true;
+                case 0:
+                    Current = 1;
+                    return true;
+                default:
+                    Current = -1;
+                    return false;
+            }
+        }
+
+        public void Reset() =>
+            Current = -1;
+
+        public int Current { get; private set; } = -1;
+
+        object IEnumerator.Current => Current;
+
+        public void Dispose()
+        {
         }
     }
 }
